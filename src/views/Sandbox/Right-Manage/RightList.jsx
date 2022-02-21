@@ -42,10 +42,7 @@ export default function RightList() {
             <Popover
               content={
                 <div style={{ textAlign: "center" }}>
-                  <Switch
-                    checked={item.pagepermisson}
-                    onClick={() => switchChange(item)}
-                  ></Switch>
+                  <Switch checked={item.pagepermisson} onClick={() => switchChange(item)}/>
                 </div>
               }
               title="权限配置"

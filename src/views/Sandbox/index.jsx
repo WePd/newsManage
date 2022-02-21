@@ -15,9 +15,9 @@ const { Content } = Layout
 export default function Sandbox() {
   return (
     <Layout>
-      <SideMenu></SideMenu>
+      <SideMenu/>
       <Layout className="site-layout">
-        <HeaderMenu></HeaderMenu>
+        <HeaderMenu/>
         <Content
           className="site-layout-background"
           style={{

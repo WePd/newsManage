@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, forwardRef } from "react"
 import { Form, Input, Select } from "antd"
-import { forwardRef } from "react/cjs/react.production.min"
 
 const { Option } = Select
 
@@ -42,17 +41,10 @@ const UserForm = forwardRef((props, ref) => {
           name="region"
           label="区域"
           rules={
-            isDisabled
-              ? []
-              : [
-                  {
-                    required: true,
-                    message: "请选择区域",
-                  },
-                ]
+            isDisabled ? [] : [{required: true, message: "请选择区域"}]
           }
         >
-          <Select allowClear disabled={isDisabled}>
+          <Select  disabled={isDisabled}>
             {props.region.map((item) => {
               return (
                 <Option value={item.value} key={item.id}>
@@ -73,7 +65,6 @@ const UserForm = forwardRef((props, ref) => {
           ]}
         >
           <Select
-            allowClear
             onChange={(value) => {
               if (value === 1) {
                 ref.current.setFieldsValue({

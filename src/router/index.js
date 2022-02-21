@@ -14,7 +14,7 @@ export default function RouterIndex() {
           path="/"
           render={() => {
             return localStorage.getItem("token") ? (
-              <Sandbox></Sandbox>
+              <Sandbox/>
             ) : (
               <Redirect to="/login" />
             )

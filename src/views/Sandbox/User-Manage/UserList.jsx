@@ -32,9 +32,25 @@ export default function UserList() {
     {
       title: "区域",
       dataIndex: "region",
+      filters: [
+          ...region.map(item => ({
+          text: item.title,
+          value: item.value
+        })),
+        {
+          text: '全球',
+          value: '全球'
+        }
+      ],
       render: (region) => {
         return <b>{region === "" ? "全球" : region}</b>
       },
+      onFilter: (value, item) =>
+      {
+        if(value === '全球'){
+          return item.region === ''
+        }
+          return item.region === value}
     },
     {
       title: "角色名称",
@@ -52,11 +68,7 @@ export default function UserList() {
       dataIndex: "roleState",
       render: (roleState, item) => {
         return (
-          <Switch
-            defaultChecked={roleState}
-            disabled={item.default}
-            onChange={() => handleChange(item)}
-          ></Switch>
+          <Switch defaultChecked={roleState} disabled={item.default} onChange={() => handleChange(item)}/>
         )
       },
     },
@@ -170,42 +182,52 @@ export default function UserList() {
     })
     console.log(item)
   }
-  //更新确认
-  const updateHandle = () => {
-    //   updateRef.current
-    //     .validateFields()
-    //     .then((value) => {
-    //       setdataSource(
-    //         dataSource.map((item) => {
-    //           if (item.id === current.id) {
-    //             return {
-    //               ...item,
-    //               ...value,
-    //               // role: roleLists.filter((item) => item.id === value.roleId)[0],
-    //             }
-    //           }
-    //           return item
-    //         })
-    //       )
-    //       setisAddVisible(false)
-    //     })
-    //     .catch((error) => new Error())
-  }
 
-  //
+  //编辑按钮， 弹出修改框
   const editHandle = (item) => {
     setTimeout(() => {
-      setisUpdateVisible(false)
-      console.log(updateRef.current)
+      // console.log(item)
+      setisUpdateVisible(true)
+      // console.log(updateRef.current)
       if (item.roleId === 1) {
         setIsUpdateAble(true)
       } else {
         setIsUpdateAble(false)
       }
-      // updateRef.current.setFieldsValue(item)
+      updateRef.current.setFieldsValue(item)
       setCurrent(item)
     }, 0)
   }
+
+  //更新确认
+  const updateHandle = () => {
+      updateRef.current.validateFields()
+        .then((value) => {
+          setdataSource(
+            dataSource.map((item) =>{
+              if (item.id === current.id) {
+                return {
+                  ...item,
+                  ...value,
+                  role: roleLists.filter((data) => data.id === value.roleId)[0],
+                }
+              }
+              return item
+            })
+          )
+          setIsUpdateAble(!isUpdateAble)
+          setisUpdateVisible(false)
+          update(value)
+        })
+        .catch((error) => new Error())
+  }
+//更新请求
+ const update = (value) => {
+    axios.patch(`http://localhost:8000/users/${current.id}`,{
+      ...value
+    })
+ }
+
   return (
     <div>
       <Button
@@ -219,9 +241,9 @@ export default function UserList() {
       <Table
         dataSource={dataSource}
         columns={columns}
-        pagination={{ pageSize: 8 }}
+        pagination={{pageSize: 8}}
         rowKey={(item) => item.id} // 给每一行
-      ></Table>
+    />
 
       <Modal
         visible={isAddVisible}
@@ -242,7 +264,9 @@ export default function UserList() {
         cancelText="取消"
         onCancel={() => {
           setisUpdateVisible(false)
+          console.log(isUpdateAble)
           setIsUpdateAble(!isUpdateAble)
+          console.log(isUpdateAble)
         }}
         onOk={() => updateHandle()}
       >
